@@ -1,4 +1,8 @@
-﻿namespace SistemaBiblioteca
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SistemaBiblioteca
 {
     public class Biblioteca
     {
@@ -44,6 +48,135 @@
             livros.Add(novoLivro);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nNovo Livro adicionado com sucesso!\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Pressione qualquer tecla para retornar ao Menu...");
+            Console.ReadKey();
+        }
+
+        public void cadastrarNovoUsuario()
+        {
+            Usuario novoUsuario = new Usuario();
+            if (usuarios.Count == 0) 
+                novoUsuario.id = 1;
+            else 
+                novoUsuario.id = usuarios.Max(q => q.id) + 1;
+
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("---------- Cadastrando novo Usuário ----------");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.Write("Digite o nome do usuário: ");
+            novoUsuario.nome = Console.ReadLine();
+            Console.Write("Digite o telefone: ");
+            novoUsuario.telefone = Console.ReadLine();
+            Console.Write("Digite o endereço: ");
+            novoUsuario.endereco = Console.ReadLine();
+            Console.Write("Digite o e-mail: ");
+            novoUsuario.email = Console.ReadLine();
+
+            novoUsuario.banido = false;
+
+            usuarios.Add(novoUsuario);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nNovo usuário cadastrado com sucesso!\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Pressione qualquer tecla para retornar ao Menu...");
+            Console.ReadKey();
+        }
+
+        private Livro selecionarLivro()
+        {
+            Console.Clear();
+            Console.WriteLine("---------- Selecionar Livro ----------");
+
+            if (livros.Count == 0)
+            {
+                Console.WriteLine("Nenhum livro cadastrado.");
+                Console.WriteLine("Pressione qualquer tecla para retornar ao Menu...");
+                Console.ReadKey();
+                return null;
+            }
+
+            Console.WriteLine("Livros disponíveis para empréstimo:");
+            foreach (var livro in livros.Where(l => l.disponivel))
+            {
+                Console.WriteLine($"ID: {livro.id}, Título: {livro.titulo}, Autor: {livro.autor}");
+            }
+
+            Console.Write("\nDigite o ID do livro que deseja emprestar: ");
+            if (int.TryParse(Console.ReadLine(), out int idLivro))
+            {
+                var livroSelecionado = livros.FirstOrDefault(l => l.id == idLivro && l.disponivel);
+                if (livroSelecionado != null)
+                {
+                    return livroSelecionado;
+                }
+            }
+
+            Console.WriteLine("Livro não encontrado ou indisponível. Pressione qualquer tecla para retornar ao Menu...");
+            Console.ReadKey();
+            return null;
+        }
+
+        private Usuario selecionarUsuario()
+        {
+            Console.Clear();
+            Console.WriteLine("---------- Selecionar Usuário ----------");
+
+            if (usuarios.Count == 0)
+            {
+                Console.WriteLine("Nenhum usuário cadastrado.");
+                Console.WriteLine("Pressione qualquer tecla para retornar ao Menu...");
+                Console.ReadKey();
+                return null;
+            }
+
+            Console.WriteLine("Usuários disponíveis:");
+            foreach (var usuario in usuarios.Where(u => !u.banido))
+            {
+                Console.WriteLine($"ID: {usuario.id}, Nome: {usuario.nome}, E-mail: {usuario.email}");
+            }
+
+            Console.Write("\nDigite o ID do usuário que pegará o livro emprestado: ");
+            if (int.TryParse(Console.ReadLine(), out int idUsuario))
+            {
+                var usuarioSelecionado = usuarios.FirstOrDefault(u => u.id == idUsuario && !u.banido);
+                if (usuarioSelecionado != null)
+                {
+                    return usuarioSelecionado;
+                }
+            }
+
+            Console.WriteLine("Usuário não encontrado ou banido. Pressione qualquer tecla para retornar ao Menu...");
+            Console.ReadKey();
+            return null;
+        }
+
+        public void emprestarLivro()
+        {
+            Livro livro = selecionarLivro();
+            if (livro == null) return;
+
+            Usuario usuario = selecionarUsuario();
+            if (usuario == null) return;
+
+            Emprestimo novoEmprestimo = new Emprestimo();
+            if (emprestimos.Count == 0) 
+                novoEmprestimo.id = 1;
+            else 
+                novoEmprestimo.id = emprestimos.Max(q => q.id) + 1;
+
+            novoEmprestimo.idLivro = livro.id;
+            novoEmprestimo.idUsuario = usuario.id;
+            livro.disponivel = false;
+            novoEmprestimo.devolvido = false;
+            novoEmprestimo.dataDevolucao = DateTime.Now.AddDays(3);
+
+            emprestimos.Add(novoEmprestimo);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nLivro emprestado com sucesso!\n");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Pressione qualquer tecla para retornar ao Menu...");
             Console.ReadKey();
