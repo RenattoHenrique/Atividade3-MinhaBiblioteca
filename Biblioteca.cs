@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -56,9 +56,9 @@ namespace SistemaBiblioteca
         public void cadastrarNovoUsuario()
         {
             Usuario novoUsuario = new Usuario();
-            if (usuarios.Count == 0) 
+            if (usuarios.Count == 0)
                 novoUsuario.id = 1;
-            else 
+            else
                 novoUsuario.id = usuarios.Max(q => q.id) + 1;
 
             Console.BackgroundColor = ConsoleColor.Green;
@@ -163,9 +163,9 @@ namespace SistemaBiblioteca
             if (usuario == null) return;
 
             Emprestimo novoEmprestimo = new Emprestimo();
-            if (emprestimos.Count == 0) 
+            if (emprestimos.Count == 0)
                 novoEmprestimo.id = 1;
-            else 
+            else
                 novoEmprestimo.id = emprestimos.Max(q => q.id) + 1;
 
             novoEmprestimo.idLivro = livro.id;

@@ -1,4 +1,4 @@
-namespace SistemaBiblioteca
+﻿namespace SistemaBiblioteca
 {
     public class Usuario : Entidade
     {
